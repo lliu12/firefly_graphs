@@ -9,7 +9,7 @@ class Simulation(object):
         self.graph = graph
         self.graph_vertices = graph_vertices
         self.phase_length = phase_length
-        self.jump = jump
+        self.jump = jump # a function that takes in positions of receiving agent
         self.inc = inc
         self.steps_elapsed = 0
         self.steps_to_converge = None
@@ -37,10 +37,13 @@ class Simulation(object):
                 a.pos = 0
             else:
                 conv = False
-        if conv:
+        if conv and self.steps_to_converge is None:
             self.steps_to_converge = self.steps_elapsed 
 
     # should this go back to initial positions (maybe make that one i) or regenerate random ? (random could be r)
     def reset(self):
+        initial_positions = np.random.randint(0, self.phase_length, len(self.graph))
         for i, a in enumerate(self.agents):
             a.pos = initial_positions[i]
+        self.steps_elapsed = 0
+        self.steps_to_converge = None

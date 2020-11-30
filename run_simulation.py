@@ -11,12 +11,26 @@ import numpy as np
 DISPLAY_SIZE = (500,500)
 w,h = DISPLAY_SIZE
 
-n = 20
-graph = graphs.generate_complete(n)
-vertices = graphs.complete_vertices(n, w,h)
-phase_length = 50
-jump = 3
-delay = 1
+## code for using cycle graph
+n = 10
+graph = graphs.generate_dumbbell(n)
+vertices = graphs.dumbbell_vertices(n, w, h)
+
+## code for using grid graph
+# r = 10
+# c = 10
+# graph = graphs.generate_grid(r, c)
+# vertices = graphs.grid_vertices(r,c, w,h)
+
+
+phase_length = 20
+jump = 1
+def jump(x):
+    # return np.random.randint(0, phase_length) # ah, issue with this is that things that WERE in sync will go out of sync again
+    return x # this one converges too fast
+    
+
+delay = 0
 initial_positions = np.random.randint(0, phase_length, len(graph))
 
 # run game
@@ -52,7 +66,9 @@ def main():
             else: 
                 pygame.draw.circle(screen, THECOLORS["black"], a.coords, 5)
                 
-        screen.blit(font.render("steps elapsed: " + str(sim.steps_elapsed), 1, THECOLORS["darkgrey"]), (5,0))
+        screen.blit(font.render("steps elapsed: " + str(sim.steps_elapsed), 1, THECOLORS["darkgrey"]), (5,5))
+        if sim.steps_to_converge is not None:
+            screen.blit(font.render("steps to converge: " + str(sim.steps_to_converge), 1, THECOLORS["darkgrey"]), (5,15))
 
         pygame.display.flip()
         clock.tick(fps)

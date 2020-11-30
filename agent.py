@@ -1,9 +1,11 @@
 import numpy as np
+# actually want to adjust this so the phase length is always 1 and the jump/inc can be functions using rational numbers
+
 
 class Agent(object):
     def __init__(self, phase_length, jump, coords, pos = 0, delay = 0, inc = 1):
         self.phase_length = phase_length # how many steps until firing (if no jumps used)
-        self.jump = jump # how many steps to increase pos by if a neighbor fires
+        self.jump = jump # a function that takes in positions of receiving and sending agents
         self.pos = pos # starting position from 0 to phase_length - 1
         self.delay = delay
         self.inc = inc # number of steps to increase pos by naturally at each simulation step
@@ -16,7 +18,8 @@ class Agent(object):
         self.pos = 0
 
     def phase_jump(self):
-        self.pos += self.jump
+        j = self.jump(self.pos)
+        self.pos += j
 
     # increment phase by 1
     def increment(self):

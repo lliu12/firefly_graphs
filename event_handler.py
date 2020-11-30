@@ -14,4 +14,7 @@ class EventHandler(object):
 
     def handle_event(self, event):
         if event.type == QUIT:
-                self.running = False
+            self.running = False
+
+        elif event.type == KEYDOWN and event.key == K_r:
+            self.sim.reset()
