@@ -18,3 +18,13 @@ class EventHandler(object):
 
         elif event.type == KEYDOWN and event.key == K_r:
             self.sim.reset()
+
+        elif event.type == KEYDOWN and event.key == K_p:
+            print("State History")
+            for i in range(len(self.sim.state_history)):
+                print(self.sim.state_history[i])
+                if i == self.sim.steps_to_repeat:
+                    print("Repeat Detected")
+                if i == self.sim.steps_to_converge:
+                    print("Convergence Detected")
+            print("\n")

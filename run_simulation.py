@@ -12,25 +12,36 @@ DISPLAY_SIZE = (500,500)
 w,h = DISPLAY_SIZE
 
 ## code for using cycle graph
-n = 10
-graph = graphs.generate_dumbbell(n)
-vertices = graphs.dumbbell_vertices(n, w, h)
+n = 13
+# graph = graphs.generate_pchord(n)
+# vertices = np.around(graphs.pchord_vertices(n, w, h)).astype(int)
 
-## code for using grid graph
-# r = 10
-# c = 10
+graph = graphs.generate_complete(n)
+vertices = np.around(graphs.complete_vertices(n, w, h)).astype(int)
+
+# # code for using grid graph
+# r = 5
+# c = 5
 # graph = graphs.generate_grid(r, c)
 # vertices = graphs.grid_vertices(r,c, w,h)
 
 
-phase_length = 20
-jump = 1
-def jump(x):
-    # return np.random.randint(0, phase_length) # ah, issue with this is that things that WERE in sync will go out of sync again
-    return x # this one converges too fast
+phase_length = 10
+# def jump(x):
+#     return x
+
+# def jump(x, phase_length = phase_length):
+#     val = -x if x <= phase_length / 2 else phase_length - x
+#     return val
+def jump(x, phase_length = phase_length):
+    l = 1
+    if x <= phase_length:
+        return -x * l
+    else: 
+        return (phase_length - x) * l
     
 
-delay = 0
+delay = 5
 initial_positions = np.random.randint(0, phase_length, len(graph))
 
 # run game
@@ -53,7 +64,8 @@ def main():
         # Update physics
         fps = 2
         
-        sim.step()
+        jumped = sim.step() # any way to be able to visualize what things jumped?
+
 
         screen.fill(THECOLORS["white"])
         for a in sim.agents:
@@ -62,13 +74,18 @@ def main():
         for a in sim.agents:
             screen.blit(font.render(str(a.pos), 1, THECOLORS["darkgrey"]), (a.coords[0], a.coords[1] + 10))
             if a.pos == 0 or a.pos >= a.phase_length:
-                pygame.draw.circle(screen, THECOLORS["yellow"], a.coords, 5)
+                if a not in jumped:
+                    pygame.draw.circle(screen, THECOLORS["yellow"], a.coords, 5)
+                else: 
+                    pygame.draw.circle(screen, THECOLORS["orange"], a.coords, 5)
             else: 
                 pygame.draw.circle(screen, THECOLORS["black"], a.coords, 5)
                 
         screen.blit(font.render("steps elapsed: " + str(sim.steps_elapsed), 1, THECOLORS["darkgrey"]), (5,5))
         if sim.steps_to_converge is not None:
             screen.blit(font.render("steps to converge: " + str(sim.steps_to_converge), 1, THECOLORS["darkgrey"]), (5,15))
+        if sim.steps_to_repeat is not None:
+            screen.blit(font.render("steps to repeat: " + str(sim.steps_to_repeat), 1, THECOLORS["darkgrey"]), (5,25))
 
         pygame.display.flip()
         clock.tick(fps)

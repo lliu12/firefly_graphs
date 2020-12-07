@@ -29,6 +29,28 @@ def cycle_vertices(n, w, h):
     points = [rad * np.array([np.cos(i * 2 * np.pi / n), np.sin(i * 2 * np.pi / n)]) + center for i in range(n)]
     return points
 
+# prime chord 3-regular graph
+# only really works if n is prime
+def generate_pchord(n):
+    g = np.zeros((n,n), dtype = int)
+    for i in range(n):
+        g[i][(i + 1) % n] = 1
+        g[(i + 1) % n][i] = 1
+        for j in range(n):
+            if (i * j % n == 1):
+                g[i][j] = 1
+                g[j][i] = 1
+    # also make -1, 1 an edge since they're both sq roots of 1
+    g[1][-1] = 1
+    g[-1][1] = 1
+    return g
+
+def pchord_vertices(n, w, h):
+    center = np.array([w / 2, h / 2])
+    rad = .8 * min(w, h) / 2
+    points = [rad * np.array([np.cos(i * 2 * np.pi / n), np.sin(i * 2 * np.pi / n)]) + center for i in range(n)]
+    return points
+
 
 def generate_path(n):
     g = np.zeros((n,n), dtype = int)
