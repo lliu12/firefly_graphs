@@ -58,6 +58,7 @@ class Simulation(object):
         self.steps_elapsed = 0
         self.steps_to_converge = None
         self.steps_to_repeat = None
+        self.state_history.clear()
 
     def current_state(self):
         return [a.pos for a in self.agents]
