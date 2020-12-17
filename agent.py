@@ -1,6 +1,4 @@
 import numpy as np
-# actually want to adjust this so the phase length is always 1 and the jump/inc can be functions using rational numbers
-
 
 class Agent(object):
     def __init__(self, phase_length, jump, coords, pos = 0, delay = 0, inc = 1):

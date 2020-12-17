@@ -21,7 +21,8 @@ class Simulation(object):
                     a.add_neighbor(self.agents[j])
 
         self.handler = EventHandler(self)
-        self.state_history = [self.current_state()]
+        self.state_history = {tuple(self.current_state()): 1}
+        self.history_list = [self.current_state()]
 
     # returns list of agents that jumped in response to a neighbor this step
     def step(self):
@@ -45,9 +46,10 @@ class Simulation(object):
             self.steps_to_converge = self.steps_elapsed 
 
         cur = self.current_state()
-        if self.steps_to_repeat is None and cur in self.state_history:
+        if self.steps_to_repeat is None and tuple(cur) in self.state_history:
             self.steps_to_repeat = self.steps_elapsed
-        self.state_history.append(cur)
+        self.state_history[tuple(cur)] = 1
+        self.history_list.append(cur)
         return jumped
 
     # should this go back to initial positions (maybe make that one i) or regenerate random ? (random could be r)
@@ -59,6 +61,7 @@ class Simulation(object):
         self.steps_to_converge = None
         self.steps_to_repeat = None
         self.state_history.clear()
+        self.history_list.clear()
 
     def current_state(self):
         return [a.pos for a in self.agents]

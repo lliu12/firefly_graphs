@@ -12,12 +12,18 @@ DISPLAY_SIZE = (500,500)
 w,h = DISPLAY_SIZE
 
 ## code for using cycle graph
-n = 13
-# graph = graphs.generate_pchord(n)
-# vertices = np.around(graphs.pchord_vertices(n, w, h)).astype(int)
+n = 10
 
-graph = graphs.generate_complete(n)
-vertices = np.around(graphs.complete_vertices(n, w, h)).astype(int)
+
+c = 10
+graph = graphs.generate_clique_cycle(c, n)
+vertices = np.around(graphs.clique_cycle_vertices(c,n,w,h)).astype(int)
+
+# graph = graphs.generate_cycle(n)
+# vertices = np.around(graphs.cycle_vertices(n, w, h)).astype(int)
+
+# graph = graphs.generate_cycle(n)
+# vertices = np.around(graphs.cycle_vertices(n, w, h)).astype(int)
 
 # # code for using grid graph
 # r = 5
@@ -27,22 +33,32 @@ vertices = np.around(graphs.complete_vertices(n, w, h)).astype(int)
 
 
 phase_length = 10
-# def jump(x):
-#     return x
+def jump(x):
+    return x
 
 # def jump(x, phase_length = phase_length):
 #     val = -x if x <= phase_length / 2 else phase_length - x
 #     return val
-def jump(x, phase_length = phase_length):
-    l = 1
-    if x <= phase_length:
-        return -x * l
-    else: 
-        return (phase_length - x) * l
+
+
+# def jump(x, phase_length = phase_length):
+#     l = 1
+#     if x <= phase_length:
+#         return -x * l
+#     else: 
+#         return (phase_length - x) * l
     
 
 delay = 5
 initial_positions = np.random.randint(0, phase_length, len(graph))
+
+# initial_positions = np.array([4, 7, 3, 6, 5, 6, 7, 9, 1, 5]) - 1
+
+# for demo:
+# initial_positions = [1, 4, 2, 7, 3, 2, 9, 7, 0, 1, 7, 0, 4]
+
+# initial_positions = np.array([1, 6, 1, 3, 6, 4, 1, 7, 2, 1]) - 1
+
 
 # run game
 def main():

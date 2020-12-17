@@ -104,6 +104,48 @@ def dumbbell_vertices(n, w, h):
     p2 = [np.array([w - i[0], i[1]]) for i in p1]
     return p1 + p2
 
+
+# c = number of cliques arranged in a cycle, n = number of nodes per clique
+def generate_clique_cycle(c, n = 10):
+    g = np.zeros((c * n, c * n))
+    for i in range(n):
+        for j in range(n):
+            for cc in range(c):
+                g[cc * n + i][cc * n + j] = 1
+                
+    # bridges between first and last clique
+    g[0][-1] = 1
+    g[-1][0] = 1
+    
+    # bridges for rest of cycle
+    for cc in range(1, c):
+        g[n * cc][n * cc - 1] = 1
+        g[n * cc - 1][n * cc] = 1
+    return g
+
+def clique_cycle_vertices(c, n, w, h):
+    cycle_center = np.array([w / 2, h / 2])
+    rad = .8 * min(w, h) / 2
+    clique_centers = [rad * np.array([np.cos(i * 2 * np.pi / c), np.sin(i * 2 * np.pi / c)]) + cycle_center for i in range(c)]
+    clique_rad = rad * .2
+    points = [clique_rad * np.array([np.cos(i * 2 * np.pi / n), np.sin(i * 2 * np.pi / n)]) + clique_centers[cc] for cc in range(c) for i in range(n)]
+    return points
+
+# get second eigenvalue of laplacian, given A
+def lambda2(A):
+    degrees = np.sum(A, axis = -1)
+    D = np.diag(degrees)
+    L = D - A
+    eigvals, eigvecs = np.linalg.eig(L)
+    eigvals.sort()
+    if len(eigvals) >= 2:
+        if eigvals[1].imag > .001:
+            print("nontrivial complex component to eval")
+        return eigvals[1].real
+    else:
+        return 0
+
+
 # def generate_star(n):
 
 
