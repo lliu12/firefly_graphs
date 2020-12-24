@@ -2,12 +2,11 @@ import numpy as np
 
 class Agent(object):
     def __init__(self, phase_length, jump, coords, pos = 0, delay = 0, inc = 1):
-        self.phase_length = phase_length # how many steps until natural_firing (if no jumps used)
-        self.jump = jump # a function that takes in positions of receiving and sending agents
+        self.phase_length = phase_length # steps per cycle (if no jumps used)
+        self.jump = jump 
         self.pos = pos # starting position from 0 to phase_length - 1
         self.delay = delay
         self.inc = inc # number of steps to increase pos by naturally at each simulation step
-
         self.neighbors = []
         self.coords = coords
         self.natural_firing = self.pos >= self.phase_length
@@ -21,8 +20,6 @@ class Agent(object):
         self.pos += j
         if self.pos >= self.phase_length or self.pos <= 0:
             self.pos = self.phase_length
-        # if self.pos >= self.phase_length: # remove this and nothing converges... interesting
-        #     self.natural_firing = True
 
     # increment phase by 1
     def increment(self):

@@ -11,19 +11,11 @@ import numpy as np
 DISPLAY_SIZE = (500,500)
 w,h = DISPLAY_SIZE
 
-## code for using cycle graph
 n = 10
 
-
-c = 10
-graph = graphs.generate_clique_cycle(c, n)
-vertices = np.around(graphs.clique_cycle_vertices(c,n,w,h)).astype(int)
-
-# graph = graphs.generate_cycle(n)
-# vertices = np.around(graphs.cycle_vertices(n, w, h)).astype(int)
-
-# graph = graphs.generate_cycle(n)
-# vertices = np.around(graphs.cycle_vertices(n, w, h)).astype(int)
+# generate dumbbell graph
+graph = graphs.generate_dumbbell(n)
+vertices = np.around(graphs.dumbbell_vertices(n, w, h)).astype(int)
 
 # # code for using grid graph
 # r = 5
@@ -33,14 +25,11 @@ vertices = np.around(graphs.clique_cycle_vertices(c,n,w,h)).astype(int)
 
 
 phase_length = 10
+# base PRC
 def jump(x):
     return x
 
-# def jump(x, phase_length = phase_length):
-#     val = -x if x <= phase_length / 2 else phase_length - x
-#     return val
-
-
+## optimal PRC w coupling strength
 # def jump(x, phase_length = phase_length):
 #     l = 1
 #     if x <= phase_length:
@@ -52,15 +41,7 @@ def jump(x):
 delay = 5
 initial_positions = np.random.randint(0, phase_length, len(graph))
 
-# initial_positions = np.array([4, 7, 3, 6, 5, 6, 7, 9, 1, 5]) - 1
-
-# for demo:
-# initial_positions = [1, 4, 2, 7, 3, 2, 9, 7, 0, 1, 7, 0, 4]
-
-# initial_positions = np.array([1, 6, 1, 3, 6, 4, 1, 7, 2, 1]) - 1
-
-
-# run game
+# run simulation
 def main():
     pygame.init()
     screen = pygame.display.set_mode(DISPLAY_SIZE, 0) 
@@ -73,15 +54,14 @@ def main():
 
     while running:
         for event in pygame.event.get():
-            # returns false if the event is one that tells the simulation to quit
+            # returns false if this is a quit event
             sim.handler.handle_event(event)
             running = sim.handler.running
 
-        # Update physics
+        # updates per second
         fps = 2
         
-        jumped = sim.step() # any way to be able to visualize what things jumped?
-
+        jumped = sim.step() 
 
         screen.fill(THECOLORS["white"])
         for a in sim.agents:

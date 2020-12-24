@@ -1,10 +1,8 @@
+# functions for generating adj matrices of communication graphs
+
 import numpy as np
 
-# argggg ok i am going to need to make paired up draw_graph functions too.. 
-# so maybe the class structure actually will be necessary to keep that from getting gross
-# i guess each graph can just be its own class and all graph's classes will have same function names LOL
-# graph.coords fn to get coordinates of each vertex in drawing
-
+# complete graph
 def generate_complete(n):
     return np.ones((n, n), dtype = int)
 
@@ -15,7 +13,7 @@ def complete_vertices(n, w, h):
     points = [rad * np.array([np.cos(i * 2 * np.pi / n), np.sin(i * 2 * np.pi / n)]) + center for i in range(n)]
     return points
 
-
+# cycle graph
 def generate_cycle(n):
     g = np.zeros((n,n), dtype = int)
     for i in range(n):
@@ -24,13 +22,10 @@ def generate_cycle(n):
     return g
 
 def cycle_vertices(n, w, h):
-    center = np.array([w / 2, h / 2])
-    rad = .8 * min(w, h) / 2
-    points = [rad * np.array([np.cos(i * 2 * np.pi / n), np.sin(i * 2 * np.pi / n)]) + center for i in range(n)]
-    return points
+    return complete_vertices(n,w,h)
 
 # prime chord 3-regular graph
-# only really works if n is prime
+# best defined if p prime, but still not a true expander
 def generate_pchord(n):
     g = np.zeros((n,n), dtype = int)
     for i in range(n):
@@ -46,12 +41,9 @@ def generate_pchord(n):
     return g
 
 def pchord_vertices(n, w, h):
-    center = np.array([w / 2, h / 2])
-    rad = .8 * min(w, h) / 2
-    points = [rad * np.array([np.cos(i * 2 * np.pi / n), np.sin(i * 2 * np.pi / n)]) + center for i in range(n)]
-    return points
+    return complete_vertices(n,w,h)
 
-
+# path graph (cycle without ends connected)
 def generate_path(n):
     g = np.zeros((n,n), dtype = int)
     for i in range(n - 1):
@@ -60,16 +52,9 @@ def generate_path(n):
     return g
 
 def path_vertices(n, w, h):
-    center = np.array([w / 2, h / 2])
-    rad = .8 * min(w, h) / 2
-    points = [rad * np.array([np.cos(i * 2 * np.pi / n), np.sin(i * 2 * np.pi / n)]) + center for i in range(n)]
-    return points
-
-
-# would be cool to gen. more bipartite or periodic graphs
+    return complete_vertices(n,w,h)
 
 # lattice graph with connected neighbors
-
 def generate_grid(r,c, activation_dist = 1):
     g = np.zeros((r * c, r * c))
     for i in range(r * c):
@@ -89,6 +74,7 @@ def grid_vertices(rownum,colnum, w, h):
     points = [(r,c) for c in cols for r in rows]
     return points
 
+# dumbbell graph
 def generate_dumbbell(n): # where n is the number of verts in one "weight" of the dumbbell
     g = np.zeros((2 * n, 2 * n))
     for i in range(n):
@@ -104,7 +90,7 @@ def dumbbell_vertices(n, w, h):
     p2 = [np.array([w - i[0], i[1]]) for i in p1]
     return p1 + p2
 
-
+# clique cycle graph
 # c = number of cliques arranged in a cycle, n = number of nodes per clique
 def generate_clique_cycle(c, n = 10):
     g = np.zeros((c * n, c * n))
@@ -131,6 +117,26 @@ def clique_cycle_vertices(c, n, w, h):
     points = [clique_rad * np.array([np.cos(i * 2 * np.pi / n), np.sin(i * 2 * np.pi / n)]) + clique_centers[cc] for cc in range(c) for i in range(n)]
     return points
 
+# graph with random percentage of edges included
+def generate_rand(n, percent):
+    # edges in complete simple graph
+    all_edges = []
+    for i in range(n):
+        for j in range (i):
+                all_edges.append([i,j])
+    edges_to_get = int(np.ceil(percent * len(all_edges) / 100))
+    edge_indices = np.random.choice(range(len(all_edges)), edges_to_get, replace = False)
+    edges = np.array(all_edges)[edge_indices]
+    
+    g = np.zeros((n, n))
+    for i,j in edges:
+        g[i][j] = 1
+        g[j][i] = 1
+    return g
+
+def rand_vertices(n, w, h):
+    return complete_vertices(n,w,h)
+
 # get second eigenvalue of laplacian, given A
 def lambda2(A):
     degrees = np.sum(A, axis = -1)
@@ -145,11 +151,3 @@ def lambda2(A):
     else:
         return 0
 
-
-# def generate_star(n):
-
-
-
-    # trees
-    # complete bipartite graph
-    # cube - two vertices adj if they differ in a single position
